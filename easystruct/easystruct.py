@@ -37,11 +37,12 @@ class EasyStruct:
     easy transformation from objects to struct representations and back again
     """
 
-    def __init__(self, fmt_str: str, converter: Callable = lambda x: x):
+    def __init__(self, fmt_str: str, packer: Callable = lambda x: x, unpacker: Callable = lambda x: x):
         self._fmt_str = fmt_str
         self.is_str = 's' in self._fmt_str.lower()
         self.field = self._init_field(fmt_str, self.is_str)
-        self.converter = converter
+        self.packer = packer
+        self.unpacker = unpacker
 
     @staticmethod
     def _init_field(fmt_str, is_str) -> _StructField:
@@ -52,14 +53,14 @@ class EasyStruct:
         """take instance data and put to bytes"""
         if self.is_str:
             d = d.encode()
-        return self.field.pack(d)
+        return self.field.pack(self.packer(d))
 
     def unpack(self, byte_stream: Iterator):
         """read bytes in"""
         res = self.field.unpack(byte_stream)
         if self.is_str:
             res = res.strip(bytes([0])).decode()
-        return self.converter(res)
+        return self.unpacker(res)
 
 
 @dataclass
