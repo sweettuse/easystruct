@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from itertools import islice
 from struct import *
-from typing import NamedTuple, Iterator, Dict, Callable
+from typing import NamedTuple, Iterator, Dict, Callable, Any
 
 
 class _StructField(NamedTuple):
@@ -39,23 +39,27 @@ class EasyStruct:
 
     def __init__(self, fmt_str: str, packer: Callable = lambda x: x, unpacker: Callable = lambda x: x):
         self._fmt_str = fmt_str
-        self.is_str = 's' in self._fmt_str.lower()
+        self.is_str = self._init_is_str(fmt_str)
         self.field = self._init_field(fmt_str, self.is_str)
         self.packer = packer
         self.unpacker = unpacker
+
+    @staticmethod
+    def _init_is_str(fmt_str):
+        return 's' in fmt_str.lower()
 
     @staticmethod
     def _init_field(fmt_str, is_str) -> _StructField:
         field_cls = _StructIterField if not is_str and re.search('[0-9]+', fmt_str) else _StructField
         return field_cls(Struct(fmt_str), calcsize(fmt_str))
 
-    def pack(self, d):
+    def pack(self, d) -> bytes:
         """take instance data and put to bytes"""
         if self.is_str:
             d = d.encode()
         return self.field.pack(self.packer(d))
 
-    def unpack(self, byte_stream: Iterator):
+    def unpack(self, byte_stream: Iterator[bytes]) -> Any:
         """read bytes in"""
         res = self.field.unpack(byte_stream)
         if self.is_str:
