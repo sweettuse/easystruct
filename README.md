@@ -18,8 +18,8 @@ class SimpleStruct(EasyStructBase):
 
 
 class BitStruct(SimpleStruct):
-    twelve_bits: EasyStruct(b'u12')  # notice i'm passing bytes here to indicate bit packing
-    four_bytes: EasyStruct(b'u1u1u1u1')
+    twelve_bits_together: EasyStruct(b'u12')  # notice i'm passing bytes here to indicate bit packing
+    four_individual_bits: EasyStruct(b'u1u1u1u1')
 
 
 def display(s: EasyStructBase):
@@ -49,7 +49,7 @@ test unpacking: True
 ================================================================================
 ================================================================================
 packed: b'\x0c\x00\x00\x00\x01\x00\x02\x00\x03\x00str\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\r'
-unpacked: BitStruct(unsigned_short=12, four_shorts=(0, 1, 2, 3), string='str', twelve_bits=2048, four_bytes=[1, 1, 0, 1])
+unpacked: BitStruct(unsigned_short=12, four_shorts=(0, 1, 2, 3), string='str', twelve_bits_together=2048, four_individual_bits=[1, 1, 0, 1])
 test unpacking: True
 ================================================================================
 ```
