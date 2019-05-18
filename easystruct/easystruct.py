@@ -59,6 +59,7 @@ class EasyStruct:
     """
 
     def __init__(self, fmt_str: Union[str, bytes], packer: Callable = lambda x: x, unpacker: Callable = lambda x: x):
+        self._fmt_str = fmt_str
         self._is_str = self._init_is_str(fmt_str)
         self.field = self._init_field(fmt_str, self._is_str)
         self._packer = packer
@@ -99,10 +100,11 @@ class EasyBitStruct(EasyStruct):
         return _StructField(cp, num_bytes + bool(num_bits), multi=False)
 
 
-class DataWalker:
+class _UnpackHelper:
+    """allow easy access to chunks of data at a time for unpacking"""
     def __init__(self, data):
-        self._is_iterable = False
         self.data = data
+        self._is_iterable = False
         with suppress(TypeError):
             self.data = iter(data)
             self._is_iterable = True
@@ -136,7 +138,7 @@ class EasyStructBase:
         data = iter(data)
         res = {}
         for names, es in cls._structs.items():
-            dw = DataWalker(es.unpack(data))
+            dw = _UnpackHelper(es.unpack(data))
             res.update((nn.name, dw.get(nn.num)) for nn in names)
 
         return cls(**res)

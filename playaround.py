@@ -105,15 +105,6 @@ print(S.unpack(s.pack()))
 # class Extra(TenBits):
 #     shorts: EasyStruct('<4H')
 
-class OhGod(EasyStructBase):
-    i: EasyStruct(b'u2u4u2')
-
-
-og = OhGod([1, 2, 3])
-print(og)
-print(og.pack())
-print('unpack', OhGod.unpack(og.pack()))
-
 # tb = Extra(4, 30, 3, [1, 2, 3, 4])
 # print(tb)
 # print(tb.pack())
