@@ -1,20 +1,13 @@
 import re
 from contextlib import suppress
-from dataclasses import dataclass
 from functools import lru_cache
 from itertools import islice, groupby, chain
 from struct import *
-from typing import NamedTuple, Iterator, Dict, Callable, Any, Union, List, Tuple, Iterable
+from typing import NamedTuple, Iterator, Dict, Callable, Any, Union, Tuple
 
 import bitstruct
 
-
-class classproperty:
-    def __init__(self, f):
-        self.f = f
-
-    def __get__(self, instance, cls):
-        return self.f(cls)
+from easystruct.utils import classproperty, dataclass
 
 
 class _NameNum(NamedTuple):
@@ -105,9 +98,10 @@ class _UnpackHelper:
     def __init__(self, data):
         self.data = data
         self._is_iterable = False
-        with suppress(TypeError):
-            self.data = iter(data)
-            self._is_iterable = True
+        if not isinstance(data, EasyStructBase):
+            with suppress(TypeError):
+                self.data = iter(data)
+                self._is_iterable = True
 
     def get(self, num):
         if not self._is_iterable:
