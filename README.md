@@ -2,7 +2,7 @@ EasyStruct
 ---
 
 EasyStruct is a small py3.7+ library that makes it really easy to
-convert between class instances and structs and vice versa.
+convert between python objects and structs and vice versa.
 
 
 quickstart
