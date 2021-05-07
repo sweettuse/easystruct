@@ -70,16 +70,25 @@ class TenBits(EasyStructBase):
     two_bits: EasyStruct(b'u2')
 
 
-# eb = EightBits(4, 7)
-# print(eb)
-# print(eb.pack())
+eb = EightBits(7, 31)
+print(eb)
+print(eb.pack())
+print(EightBits.unpack(eb.pack()))
 # print(EightBits.unpack(eb.pack()))
-# # print(EightBits.unpack(eb.pack()))
-#
-# tb = TenBits(4, 30, 3)
-# print(tb)
-# print(tb.pack())
-# print(TenBits.unpack(tb.pack()))
+
+tb = TenBits(4, 30, 3)
+print(tb)
+print(tb.pack())
+print(TenBits.unpack(tb.pack()))
+
+
+class EB1(EightBits):
+    two_bytes: EasyStruct('H')
+
+
+eb1 = EB1(7, 31, 2 ** 16 - 1)
+print(eb1)
+print(EB1.unpack(iter(eb1.pack())))
 
 
 # class Orig(EasyStructBase):
@@ -100,7 +109,6 @@ s = S(4, 'jebtuse')
 print(s)
 print(s.pack())
 print(S.unpack(s.pack()))
-
 
 # class Extra(TenBits):
 #     shorts: EasyStruct('<4H')

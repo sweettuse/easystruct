@@ -128,7 +128,7 @@ class EasyStructBase:
         return b''.join(res)
 
     @classmethod
-    def unpack(cls, data: bytes) -> 'EasyStructBase':
+    def unpack(cls, data: Union[bytes, Iterator[bytes]]) -> 'EasyStructBase':
         data = iter(data)
         res = {}
         for names, es in cls._structs.items():
